@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PlayerJump : MonoBehaviour
 {
@@ -45,7 +46,14 @@ public class PlayerJump : MonoBehaviour
 
     private void FixedUpdate()
     {
-        anim.SetFloat("SpeedY", rb.velocity.y);
+        if (!isGrounded)
+        {
+            anim.SetFloat("SpeedY", rb.velocity.y);
+        }
+        else
+        {
+            anim.SetFloat("SpeedY", 0);
+        }
 
         Grounded();
     }
