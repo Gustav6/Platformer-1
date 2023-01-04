@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class PlayerMovment : MonoBehaviour
 {
     public float horizontalSpeed = 10f;
@@ -21,8 +22,6 @@ public class PlayerMovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontal = (Input.GetAxis("Horizontal"));
-
         anim.SetFloat("SpeedX", Mathf.Abs(horizontal));
 
         flip();
@@ -43,5 +42,10 @@ public class PlayerMovment : MonoBehaviour
 
             facingRight = !facingRight;
         }
+    }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        horizontal = context.ReadValue<Vector2>().x;
     }
 }

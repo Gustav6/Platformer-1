@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
     public Animator anim;
+    public PlayerJump playerJump;
 
     public Transform attackPoint;
     public LayerMask enemyLayers;
@@ -13,20 +15,6 @@ public class PlayerAttack : MonoBehaviour
     public int attackDamage = 40;
     public float attackRate = 2f;
     float nextAttackTime = 0f;
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Time.time >= nextAttackTime)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                anim.SetTrigger("Attack");
-                nextAttackTime = Time.time + 1f / attackRate;
-            }
-        }
-    }
 
     void Attack()
     {
@@ -46,5 +34,17 @@ public class PlayerAttack : MonoBehaviour
         }
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+
+    public void Attack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                anim.SetTrigger("Attack");
+                nextAttackTime = Time.time + 1f / attackRate;
+            }
+        }
     }
 }

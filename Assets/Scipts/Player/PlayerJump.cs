@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR;
 
 public class PlayerJump : MonoBehaviour
@@ -12,11 +13,10 @@ public class PlayerJump : MonoBehaviour
 
     const float groundCheckRadius = 0.2f;
     public float fallMultiplier = 2.5f;
-    public float lowJumpMultiplier = 2f;
     public float jumpForce = 10f;
-    [SerializeField] private bool isGrounded = false;
 
-    [SerializeField] public LayerMask jumpableGround;
+    public bool isGrounded = false;
+    public LayerMask jumpableGround;
     // Start is called before the first frame update
     void Awake()
     {
@@ -24,23 +24,24 @@ public class PlayerJump : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        if (context.canceled && rb.velocity.y > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+        }
+    }
+
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            GetComponent<Rigidbody2D>().velocity = Vector2.up * jumpForce;
-            anim.SetBool("Jump", true);
-        }
-
         if (rb.velocity.y < 0)
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier -1) * Time.deltaTime;
-        }
-        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            rb.velocity += (fallMultiplier - 1) * Physics2D.gravity.y * Time.deltaTime * Vector2.up;
         }
     }
 
@@ -60,7 +61,7 @@ public class PlayerJump : MonoBehaviour
 
     void Grounded()
     {
-         isGrounded = false;
+        isGrounded = false;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(GroundCheck.position, groundCheckRadius, groundLayer);
         if (colliders.Length > 0) 
