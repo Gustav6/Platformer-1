@@ -24,7 +24,7 @@ public class PlayerMovment : MonoBehaviour
     {
         anim.SetFloat("SpeedX", Mathf.Abs(horizontal));
 
-        flip();
+        Flip();
     }
 
     void FixedUpdate()
@@ -32,7 +32,7 @@ public class PlayerMovment : MonoBehaviour
         rb.velocity = new Vector2(horizontal * horizontalSpeed, rb.velocity.y);
     }
 
-    void flip()
+    void Flip()
     {
         if (facingRight && horizontal < 0f || !facingRight && horizontal > 0f)
         {
