@@ -4635,11 +4635,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 1255994469}
   attackPoint: {fileID: 1594865804}
-  attackRange: 0.6
   enemyLayers:
     serializedVersion: 2
     m_Bits: 64
+  attackRange: 0.6
   attackDamage: 40
+  attackRate: 0.9
 --- !u!1 &1429408738
 GameObject:
   m_ObjectHideFlags: 0

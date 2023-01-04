@@ -7,19 +7,25 @@ public class PlayerAttack : MonoBehaviour
     public Animator anim;
 
     public Transform attackPoint;
-    public float attackRange = 0.5f;
     public LayerMask enemyLayers;
 
+    public float attackRange = 0.5f;
     public int attackDamage = 40;
+    public float attackRate = 2f;
+    float nextAttackTime = 0f;
+
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Time.time >= nextAttackTime)
         {
-            anim.SetTrigger("Attack");
+            if (Input.GetMouseButtonDown(0))
+            {
+                anim.SetTrigger("Attack");
+                nextAttackTime = Time.time + 1f / attackRate;
+            }
         }
-
     }
 
     void Attack()
