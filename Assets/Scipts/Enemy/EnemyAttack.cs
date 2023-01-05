@@ -11,7 +11,7 @@ public class EnemyAttack : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerHealth.TakeDamage(damage);
+             playerHealth.TakeDamage(damage);
         }
     }
 }

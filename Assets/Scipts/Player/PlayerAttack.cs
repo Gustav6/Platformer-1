@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     public Animator anim;
-    public PlayerJump playerJump;
-
     public Transform attackPoint;
     public LayerMask enemyLayers;
 
@@ -15,6 +13,17 @@ public class PlayerAttack : MonoBehaviour
     public int attackDamage = 40;
     public float attackRate = 2f;
     float nextAttackTime = 0f;
+    bool attack = false;
+
+    void Update()
+    {
+        if (attack == true && Time.time >= nextAttackTime)
+        {
+            anim.SetTrigger("Attack");
+            nextAttackTime = Time.time + 1f / attackRate;
+            attack = false;
+        }
+    }
 
     void Attack()
     {
@@ -40,11 +49,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (context.started)
         {
-            if (Time.time >= nextAttackTime)
-            {
-                anim.SetTrigger("Attack");
-                nextAttackTime = Time.time + 1f / attackRate;
-            }
+            attack = true;
         }
     }
 }
