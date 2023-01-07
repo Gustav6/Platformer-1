@@ -6,8 +6,8 @@ public class EnemyHealth : MonoBehaviour
 {
     public Animator anim;
 
-    public int maxHealth = 100;
-    int currenthealth;
+    public float maxHealth = 100;
+    float currenthealth;
 
     // Start is called before the first frame update
     void Start()
@@ -15,7 +15,7 @@ public class EnemyHealth : MonoBehaviour
         currenthealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         currenthealth -= damage;
 
@@ -33,7 +33,6 @@ public class EnemyHealth : MonoBehaviour
         
         GetComponent<Rigidbody2D>().isKinematic = true;
         GetComponent<CapsuleCollider2D>().enabled = false;
-        this.enabled= false;
+        this.enabled = false;
     }
-
 }

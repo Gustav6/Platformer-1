@@ -5,13 +5,12 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] float health;
-    
+    public float currentHealth;
     public float maxHealth = 100;
     public bool isDead = false;
 
     public Animator anim;
-    public Image healthBar;
+    public HealthBar healthBar;
     Rigidbody2D rb;
 
     void Awake()
@@ -20,16 +19,13 @@ public class PlayerHealth : MonoBehaviour
     }
     void Start()
     {
-        health = maxHealth;
+        currentHealth = maxHealth;
+        healthBar.MaxHealth(maxHealth);
     }
+
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            Application.LoadLevel(Application.loadedLevel);
-        }
-
         if (Input.GetKeyDown(KeyCode.Insert))
         {
             Heal(5);
@@ -37,19 +33,22 @@ public class PlayerHealth : MonoBehaviour
 
         if (isDead)
         {
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            rb.velocity = new Vector2(0, -1);
         }
     }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        healthBar.fillAmount = health / 100f;
+        currentHealth -= damage;
+        healthBar.SetHealth(currentHealth); 
+        if (currentHealth >= 0.1f)
+        {
         anim.SetTrigger("PlayerTookDamage");
-        if (health <= 0)
+        }
+
+        if (currentHealth <= 0 && !isDead)
         {
             GetComponent<PlayerMovment>().enabled = false;
-            GetComponent<PlayerJump>().enabled = false;
             GetComponent<PlayerAttack>().enabled = false;
             anim.SetBool("IsDead", true);
             anim.SetBool("Jump", false);
@@ -59,9 +58,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(float healingAmount)
     {
-        health += healingAmount;
-        health = Mathf.Clamp(health, 0, maxHealth);
-
-        healthBar.fillAmount = health / 100f;
+        currentHealth += healingAmount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        healthBar.SetHealth(currentHealth);
     }
 }
