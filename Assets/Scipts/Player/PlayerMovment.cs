@@ -15,29 +15,54 @@ public class PlayerMovment : MonoBehaviour
     private LayerMask jumpableGround;
 
     private Vector2 newVelocity;
-    public Vector2 movment;
 
     public bool canFlip = true;
+
     public float xInput;
     public float horizontalSpeed = 10f;
+
     const float groundCheckRadius = 0.2f;
     public float fallMultiplier = 2.5f;
     public float jumpForce = 10f;
 
+    public float hangTime = .1f;
+    private float hangCounter;
 
     Rigidbody2D rb;
     public Animator anim;
+
+    public ParticleSystem footsteps;
+    private ParticleSystem.EmissionModule footEmission;
 
     // Start is called before the first frame update
     void Awake()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        footEmission = footsteps.emission;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isGrounded)
+        {
+            hangCounter = hangTime;
+        }
+        else
+        {
+            hangCounter -= Time.deltaTime;
+        }
+
+        if (xInput != 0 && isGrounded)
+        {
+            footEmission.rateOverTime = 35f;
+        }
+        else
+        {
+            footEmission.rateOverTime = 0f;
+        }
+
         if (rb.velocity.y < 0)
         {
             rb.velocity += (fallMultiplier - 1) * Physics2D.gravity.y * Time.deltaTime * Vector2.up;
@@ -82,7 +107,7 @@ public class PlayerMovment : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed && isGrounded)
+        if (context.performed && hangCounter > 0f)
         {
             newVelocity.Set(rb.velocity.x, jumpForce);
             rb.velocity = newVelocity;
