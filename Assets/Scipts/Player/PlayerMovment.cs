@@ -1,40 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovment : MonoBehaviour
 {
-    bool facingRight = true;
-    public bool isGrounded = false;
-
     [SerializeField] 
     Transform GroundCheck;
     [SerializeField] 
     LayerMask groundLayer;
     [SerializeField] 
     private LayerMask jumpableGround;
+    [SerializeField]
+    private Transform wallCheck;
+    [SerializeField]
+    private LayerMask wallLayer;
 
     private Vector2 newVelocity;
 
+    // Checks if you can flip the player
+    bool facingRight = true;
     public bool canFlip = true;
 
+    // Horizontal movemnt speed and the input
     public float xInput;
     public float horizontalSpeed = 10f;
 
+    // Jump, checks if you are on the gorund and custom gravity
+    private bool isJumpingFromWall = false;
+    public bool isGrounded = false;
     const float groundCheckRadius = 0.2f;
     public float fallMultiplier = 2.5f;
     public float jumpForce = 10f;
 
+    // Allows you too jump after you have left a ledge
     public float hangTime = .1f;
     private float hangCounter;
 
     Rigidbody2D rb;
     public Animator anim;
 
+    // Dash
+    public float dashingPower = 10f;
+    public float dashingTime = 0.2f;
+    public float dashingCooldown = 1f;
+    bool isDashing;
+    bool canDash = true;
+
+    // Particales when walking
     public ParticleSystem footsteps;
     private ParticleSystem.EmissionModule footEmission;
 
-    // Start is called before the first frame update
+    // Wall slide
+    private bool isWallSliding;
+    public float wallSlidingSpeed = 2f;
+
+    // Wall Jump
+    [SerializeField]
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    [SerializeField]
+    private float wallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    [SerializeField]
+    private float wallJumpingDuration = 0.4f;
+    public Vector2 wallJumpingPower = new(8f, 16f);
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -42,9 +73,13 @@ public class PlayerMovment : MonoBehaviour
         footEmission = footsteps.emission;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         if (isGrounded)
         {
             hangCounter = hangTime;
@@ -63,18 +98,29 @@ public class PlayerMovment : MonoBehaviour
             footEmission.rateOverTime = 0f;
         }
 
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y < 0 && !isWallSliding)
         {
             rb.velocity += (fallMultiplier - 1) * Physics2D.gravity.y * Time.deltaTime * Vector2.up;
         }
 
         anim.SetFloat("SpeedX", Mathf.Abs(xInput));
 
-        Flip();
+        WallSlide();
+        WallJump();
+
+        if (!isWallJumping)
+        {
+            Flip();
+        }
     }
 
     void FixedUpdate()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         if (!isGrounded)
         {
             anim.SetFloat("SpeedY", rb.velocity.y);
@@ -85,7 +131,10 @@ public class PlayerMovment : MonoBehaviour
         }
 
         IsGrounded();
-        ApplyMovment();
+        if (!isWallJumping)
+        {
+            ApplyMovment();
+        }
     }
 
     void IsGrounded()
@@ -99,6 +148,71 @@ public class PlayerMovment : MonoBehaviour
         anim.SetBool("Jump", !isGrounded);
     }
 
+    private bool IsWalled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void WallSlide()
+    {
+        if (IsWalled() && !isGrounded && xInput != 0f)
+        {
+            isWallSliding = true;
+            newVelocity.Set(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+            rb.velocity = newVelocity;
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+
+    private void WallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpingDirection = -transform.localScale.x;
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if (isJumpingFromWall && wallJumpingCounter > 0f)
+        {
+            isJumpingFromWall = false;
+            isWallJumping = true;
+            rb.velocity = new(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0f;
+
+            if (transform.localScale.x != wallJumpingDirection)
+            {
+                facingRight = !facingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+    }
+    private void StopWallJumping()
+    {
+        isWallJumping = false;
+    }
+
+    public void CheckDash(InputAction.CallbackContext context)
+    {
+        if (context.performed && canDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
 
     public void CheckInput(InputAction.CallbackContext context)
     {
@@ -108,23 +222,30 @@ public class PlayerMovment : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
 
-        if (context.performed && hangCounter > 0f)
+        if (context.performed && hangCounter > 0f && !isWallSliding)
         {
             newVelocity.Set(rb.velocity.x, jumpForce);
             rb.velocity = newVelocity;
         }
 
-        if (context.canceled && rb.velocity.y > 0f)
+        if (context.canceled && rb.velocity.y > 0f && !isWallSliding)
         {
             newVelocity.Set(rb.velocity.x, rb.velocity.y * 0.5f);
             rb.velocity = newVelocity;
+        }
+
+        if (isWallSliding)
+        {
+            isJumpingFromWall = true;
         }
     }
 
     public void ApplyMovment()
     {
+
         newVelocity.Set(xInput * horizontalSpeed, rb.velocity.y);
         rb.velocity = newVelocity;
+
     }
 
     public void DisableFlip()
@@ -147,5 +268,19 @@ public class PlayerMovment : MonoBehaviour
 
             facingRight = !facingRight;
         }
+    }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
+        yield return new WaitForSeconds(dashingTime); 
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
     }
 }
