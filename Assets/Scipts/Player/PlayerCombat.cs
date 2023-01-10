@@ -97,6 +97,7 @@ public class PlayerCombat : MonoBehaviour
         anim.SetBool("Attack1", false);
     }
 
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(attack1HitBoxPos.position, attack1Radius);

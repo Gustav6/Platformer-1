@@ -107,6 +107,7 @@ public class PlayerMovment : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
+
         if (context.performed && hangCounter > 0f)
         {
             newVelocity.Set(rb.velocity.x, jumpForce);
