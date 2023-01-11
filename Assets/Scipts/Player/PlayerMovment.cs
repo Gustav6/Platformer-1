@@ -25,9 +25,11 @@ public class PlayerMovment : MonoBehaviour
     // Horizontal movemnt speed and the input
     public float xInput;
     public float horizontalSpeed = 10f;
+    public float horizontalSpeedOnHit = 2;
 
     // Jump, checks if you are on the gorund and custom gravity
     private bool isJumpingFromWall = false;
+    private bool Jumping;
     public bool isGrounded = false;
     const float groundCheckRadius = 0.2f;
     public float fallMultiplier = 2.5f;
@@ -66,6 +68,13 @@ public class PlayerMovment : MonoBehaviour
     private float wallJumpingDuration = 0.4f;
     public Vector2 wallJumpingPower = new(8f, 16f);
 
+    // Double jump
+    [SerializeField]
+    private bool doubleJump;
+
+    private bool isAttacking;
+    public float attackHorizontalSpeed = 0f;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -80,7 +89,9 @@ public class PlayerMovment : MonoBehaviour
             return;
         }
 
-        if (isGrounded)
+        isAttacking = GetComponent<PlayerCombat>().isAttacking;
+
+        if (isGrounded || doubleJump)
         {
             hangCounter = hangTime;
         }
@@ -175,11 +186,13 @@ public class PlayerMovment : MonoBehaviour
             isWallJumping = false;
             wallJumpingDirection = -transform.localScale.x;
             wallJumpingCounter = wallJumpingTime;
+            anim.SetBool("WallSlide", true);
 
             CancelInvoke(nameof(StopWallJumping));
         }
         else
         {
+            anim.SetBool("WallSlide", false);
             wallJumpingCounter -= Time.deltaTime;
         }
 
@@ -208,7 +221,7 @@ public class PlayerMovment : MonoBehaviour
 
     public void CheckDash(InputAction.CallbackContext context)
     {
-        if (context.performed && canDash)
+        if (context.performed && canDash && !isWallSliding)
         {
             StartCoroutine(Dash());
         }
@@ -221,8 +234,15 @@ public class PlayerMovment : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-
         if (context.performed && hangCounter > 0f && !isWallSliding)
+        {
+            newVelocity.Set(rb.velocity.x, jumpForce);
+            rb.velocity = newVelocity;
+
+            doubleJump = !doubleJump;
+        }
+
+        if (context.started && doubleJump)
         {
             newVelocity.Set(rb.velocity.x, jumpForce);
             rb.velocity = newVelocity;
@@ -238,14 +258,25 @@ public class PlayerMovment : MonoBehaviour
         {
             isJumpingFromWall = true;
         }
+
+        if (isGrounded && !context.performed)
+        {
+            doubleJump = false;
+        }
     }
 
     public void ApplyMovment()
     {
-
-        newVelocity.Set(xInput * horizontalSpeed, rb.velocity.y);
-        rb.velocity = newVelocity;
-
+        if (!isAttacking)
+        {
+            newVelocity.Set(xInput * horizontalSpeed, rb.velocity.y);
+            rb.velocity = newVelocity;
+        }
+        if (isAttacking)
+        {
+            newVelocity.Set(xInput * horizontalSpeed * attackHorizontalSpeed, rb.velocity.y);
+            rb.velocity = newVelocity;
+        }
     }
 
     public void DisableFlip()
@@ -282,5 +313,18 @@ public class PlayerMovment : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(wallCheck.position, 0.2f);
+    }
+
+    private void SlowMovmentOnHit()
+    {
+        horizontalSpeed *= 0.2f;
+    }
+    private void ReturnMovmentAfterHit()
+    {
+        horizontalSpeed *= 5;
     }
 }

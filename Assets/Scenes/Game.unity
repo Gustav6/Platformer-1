@@ -6895,7 +6895,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998427181}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.019, y: 0.95, z: 0}
+  m_LocalPosition: {x: -0.02, y: 0.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56626,21 +56626,23 @@ MonoBehaviour:
     m_Bits: 128
   canFlip: 1
   xInput: 0
-  horizontalSpeed: 7
+  horizontalSpeed: 8.5
   isGrounded: 0
-  fallMultiplier: 2.8
-  jumpForce: 8
-  hangTime: 0.1
+  fallMultiplier: 3.2
+  jumpForce: 8.4
+  hangTime: 0.2
   anim: {fileID: 1255994469}
-  dashingPower: 32
+  dashingPower: 12
   dashingTime: 0.2
-  dashingCooldown: 0.5
+  dashingCooldown: 1
   footsteps: {fileID: 955608856}
   wallSlidingSpeed: 2
   isWallJumping: 0
   wallJumpingTime: 0.2
-  wallJumpingDuration: 0.5
-  wallJumpingPower: {x: 8, y: 10}
+  wallJumpingDuration: 0.6
+  wallJumpingPower: {x: 7, y: 9}
+  doubleJump: 0
+  attackHorizontalSpeed: 0
 --- !u!50 &1255994466
 Rigidbody2D:
   serializedVersion: 4
@@ -56748,18 +56750,6 @@ MonoBehaviour:
       - m_Target: {fileID: 1255994465}
         m_TargetAssemblyTypeName: PlayerMovment, Assembly-CSharp
         m_MethodName: Jump
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1255994465}
-        m_TargetAssemblyTypeName: PlayerMovment, Assembly-CSharp
-        m_MethodName: WallJumpInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -56878,13 +56868,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatEnabled: 1
-  inputTimer: 2
-  attack1Radius: 0.7
+  inputTimer: 1.2
+  attack1Radius: 0.5
   attack1Damage: 20
   attack1HitBoxPos: {fileID: 1594865804}
   whatIsDamageable:
     serializedVersion: 2
     m_Bits: 64
+  isAttacking: 0
   anim: {fileID: 1255994469}
 --- !u!1 &1281622656
 GameObject:
@@ -57287,7 +57278,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594865803}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 0.08, z: 0}
+  m_LocalPosition: {x: 0.839, y: 0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57645,7 +57636,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1639262063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.322, y: 0.51, z: 0}
+  m_LocalPosition: {x: 0.216, y: 0.436, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

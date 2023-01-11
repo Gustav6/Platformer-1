@@ -15,12 +15,17 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField]
     private LayerMask whatIsDamageable;
     
-    private bool gotInput, isAttacking, isFirstAttack;
+    private bool gotInput;
+    public bool isAttacking;
+
+    private int attackCounter = 0;
 
     private float lastInputTime = Mathf.NegativeInfinity;
 
     public Animator anim;
     private bool attack;
+
+    private bool grounded;
 
     private void Start()
     {
@@ -30,6 +35,8 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
+        grounded = GetComponent<PlayerMovment>().isGrounded;
+
         CheckCombatInput();
         CheckAttacks();
     }
@@ -46,34 +53,39 @@ public class PlayerCombat : MonoBehaviour
                 attack = false;
             }
         }
+
     }
 
     private void CheckAttacks()
     {
         if (gotInput)
         {
+            if (attackCounter >= 3)
+            {
+                attackCounter = 0;
+            }
+
             if (!isAttacking)
             {
                 gotInput = false;
                 isAttacking = true;
-                isFirstAttack = !isFirstAttack;
+                anim.SetInteger("AttackCounter", attackCounter);
                 anim.SetBool("Attack1", true);
-                anim.SetBool("FirstAttack", isFirstAttack);
                 anim.SetBool("IsAttacking", isAttacking);
+                attackCounter++;
             }
         }
 
         if (Time.time >= lastInputTime + inputTimer)
         {
             gotInput = false;
-            isFirstAttack = false;
+            attackCounter = 0;
         }
-
     }
 
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && grounded)
         {
             attack = true;
         }
@@ -96,7 +108,6 @@ public class PlayerCombat : MonoBehaviour
         anim.SetBool("IsAttacking", isAttacking);
         anim.SetBool("Attack1", false);
     }
-
 
     private void OnDrawGizmos()
     {
