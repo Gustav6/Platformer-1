@@ -15703,8 +15703,8 @@ MonoBehaviour:
   wallSlidingSpeed: 2
   isWallJumping: 0
   wallJumpingTime: 0.2
-  wallJumpingDuration: 0.4
-  wallJumpingPower: {x: 8, y: 16}
+  wallJumpingDuration: 0.5
+  wallJumpingPower: {x: 8, y: 10}
 --- !u!50 &1255994466
 Rigidbody2D:
   serializedVersion: 4
