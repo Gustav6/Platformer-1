@@ -25,7 +25,6 @@ public class PlayerMovment : MonoBehaviour
     // Horizontal movemnt speed and the input
     public float xInput;
     public float horizontalSpeed = 10f;
-    public float horizontalSpeedOnHit = 2;
 
     // Jump, checks if you are on the gorund and custom gravity
     private bool isJumpingFromWall = false;
@@ -48,6 +47,8 @@ public class PlayerMovment : MonoBehaviour
     public float dashingCooldown = 1f;
     bool isDashing;
     bool canDash = true;
+    [SerializeField]
+    private TrailRenderer tr;
 
     // Particales when walking
     public ParticleSystem footsteps;
@@ -308,7 +309,9 @@ public class PlayerMovment : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
         rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
-        yield return new WaitForSeconds(dashingTime); 
+        tr.emitting = true;
+        yield return new WaitForSeconds(dashingTime);
+        tr.emitting = false;
         rb.gravityScale = originalGravity;
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
@@ -325,6 +328,6 @@ public class PlayerMovment : MonoBehaviour
     }
     private void ReturnMovmentAfterHit()
     {
-        horizontalSpeed *= 5;
+        horizontalSpeed = 8.5f;
     }
 }
