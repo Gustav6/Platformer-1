@@ -1300,7 +1300,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -7114,18 +7114,6 @@ CompositeCollider2D:
         Y: 119999959
       - X: 529999959
         Y: 119999900
-      - X: 570000041
-        Y: 119999900
-      - X: 570000100
-        Y: 119999959
-      - X: 570000100
-        Y: 120000000
-      - X: 579999900
-        Y: 120000000
-      - X: 579999900
-        Y: 119999959
-      - X: 579999959
-        Y: 119999900
       - X: 621875028
         Y: 119999900
       - X: 621875065
@@ -7352,18 +7340,6 @@ CompositeCollider2D:
         Y: 20000041
       - X: 920000041
         Y: 20000100
-      - X: 739999959
-        Y: 20000100
-      - X: 739999900
-        Y: 20000041
-      - X: 739999900
-        Y: 20000000
-      - X: 730000100
-        Y: 20000000
-      - X: 730000100
-        Y: 20000041
-      - X: 730000041
-        Y: 20000100
       - X: 720000000
         Y: 20000100
       - X: 720000000
@@ -7418,8 +7394,14 @@ CompositeCollider2D:
         Y: 65000000
       - X: 675000000
         Y: 70000000
-      - X: 670000000
+      - X: 670000100
         Y: 70000000
+      - X: 670000100
+        Y: 70000041
+      - X: 670000041
+        Y: 70000100
+      - X: 670000000
+        Y: 70000100
       - X: 670000000
         Y: 75000000
       - X: 665000000
@@ -7701,7 +7683,7 @@ CompositeCollider2D:
       - {x: 68, y: 6.000039}
       - {x: 67.99999, y: 6.5000076}
       - {x: 67.499985, y: 7}
-      - {x: 67, y: 7.0000296}
+      - {x: 67, y: 7.000039}
       - {x: 66.99999, y: 7.500008}
       - {x: 66.499985, y: 8}
       - {x: 66, y: 8.000039}
@@ -56519,6 +56501,7 @@ GameObject:
   - component: {fileID: 1255994466}
   - component: {fileID: 1255994472}
   - component: {fileID: 1255994469}
+  - component: {fileID: 1255994475}
   - component: {fileID: 1255994465}
   - component: {fileID: 1255994474}
   - component: {fileID: 1255994473}
@@ -56632,9 +56615,10 @@ MonoBehaviour:
   jumpForce: 8.4
   hangTime: 0.2
   anim: {fileID: 1255994469}
-  dashingPower: 12
+  dashingPower: 18
   dashingTime: 0.2
   dashingCooldown: 1
+  tr: {fileID: 1255994475}
   footsteps: {fileID: 955608856}
   wallSlidingSpeed: 2
   isWallJumping: 0
@@ -56642,7 +56626,7 @@ MonoBehaviour:
   wallJumpingDuration: 0.6
   wallJumpingPower: {x: 7, y: 9}
   doubleJump: 0
-  attackHorizontalSpeed: 0
+  attackHorizontalSpeed: 0.05
 --- !u!50 &1255994466
 Rigidbody2D:
   serializedVersion: 4
@@ -56877,6 +56861,114 @@ MonoBehaviour:
     m_Bits: 64
   isAttacking: 0
   anim: {fileID: 1255994469}
+--- !u!96 &1255994475
+TrailRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255994460}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Time: 0.35
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.3396988
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 0, g: 0, b: 0, a: 1}
+      key1: {r: 0, g: 0, b: 0, a: 0}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MinVertexDistance: 0.1
+  m_Autodestruct: 0
+  m_Emitting: 0
 --- !u!1 &1281622656
 GameObject:
   m_ObjectHideFlags: 0

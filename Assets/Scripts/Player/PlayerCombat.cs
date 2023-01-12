@@ -60,11 +60,6 @@ public class PlayerCombat : MonoBehaviour
     {
         if (gotInput)
         {
-            if (attackCounter >= 3)
-            {
-                attackCounter = 0;
-            }
-
             if (!isAttacking)
             {
                 gotInput = false;
@@ -73,6 +68,10 @@ public class PlayerCombat : MonoBehaviour
                 anim.SetBool("Attack1", true);
                 anim.SetBool("IsAttacking", isAttacking);
                 attackCounter++;
+            }
+            if (attackCounter >= 3)
+            {
+                attackCounter = 0;
             }
         }
 
@@ -107,6 +106,11 @@ public class PlayerCombat : MonoBehaviour
         isAttacking = false;
         anim.SetBool("IsAttacking", isAttacking);
         anim.SetBool("Attack1", false);
+    }
+
+    private void AttackCounterReset()
+    {
+        anim.SetInteger("AttackCounter", 0);
     }
 
     private void OnDrawGizmos()
