@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class PlayerHealth : MonoBehaviour
             GetComponent<PlayerCombat>().enabled = false;
             anim.SetBool("IsDead", true);
             anim.SetBool("Jump", false);
+            FindObjectOfType<AudioManager>().Play("PlayerDeath");
             isDead = true;
         }
     }
