@@ -28,7 +28,6 @@ public class PlayerMovment : MonoBehaviour
 
     // Jump, checks if you are on the gorund and custom gravity
     private bool isJumpingFromWall = false;
-    private bool Jumping;
     public bool isGrounded = false;
     const float groundCheckRadius = 0.2f;
     public float fallMultiplier = 2.5f;
@@ -73,8 +72,11 @@ public class PlayerMovment : MonoBehaviour
     [SerializeField]
     private bool doubleJump;
 
+    // Checks if player is attack and chages horizontal speed based on that
     private bool isAttacking;
     public float attackHorizontalSpeed = 0f;
+
+    // How to handle slopes
 
     void Awake()
     {
