@@ -35,7 +35,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
-        grounded = GetComponent<PlayerMovment>().isGrounded;
+        grounded = GetComponent<PlayerMovment>().CanJump; 
 
         CheckCombatInput();
         CheckAttacks();
@@ -98,7 +98,7 @@ public class PlayerCombat : MonoBehaviour
         {
             //collider.transform.parent.SendMessage("Damage", attack1Damage);
             collider.GetComponent<EnemyHealth>().TakeDamage(attack1Damage);
-        }
+        }    
     }
 
     private void FinishAttack1()
