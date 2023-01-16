@@ -97,6 +97,11 @@ public class PlayerMovment : MonoBehaviour
             footEmission.rateOverTime = 0f;
         }
 
+        if (rb.velocity.y < 0f)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.deltaTime;
+        }
+
         anim.SetFloat("SpeedX", Mathf.Abs(xInput));
 
         if (!isWallJumping)
