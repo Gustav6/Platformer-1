@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovment : MonoBehaviour
 {
+
     [SerializeField] private Transform wallCheck;
     [SerializeField] LayerMask groundLayer, jumpableGround, wallLayer;
 
@@ -70,6 +71,8 @@ public class PlayerMovment : MonoBehaviour
 
     void Update()
     {
+    
+
         Grounded();
 
         isAttacking = GetComponent<PlayerCombat>().isAttacking;
@@ -112,6 +115,8 @@ public class PlayerMovment : MonoBehaviour
 
     void FixedUpdate()
     {
+      
+
         if (isDashing)
         {
             return;
@@ -154,6 +159,8 @@ public class PlayerMovment : MonoBehaviour
 
     private void WallJump()
     {
+     
+
         if (isWallSliding)
         {
             isWallJumping = false;
@@ -194,6 +201,11 @@ public class PlayerMovment : MonoBehaviour
 
     public void CheckDash(InputAction.CallbackContext context)
     {
+        if (DialogueManager.isActive == true)
+        {
+            return;
+        }
+
         if (context.performed && canDash && !isWallSliding)
         {
             StartCoroutine(Dash());
@@ -207,6 +219,11 @@ public class PlayerMovment : MonoBehaviour
 
     public void VerticalMovment(InputAction.CallbackContext context)
     {
+        if (DialogueManager.isActive == true)
+        {
+            return;
+        }
+
         if (context.performed && hangCounter > 0f && !isWallSliding)
         {
             rb.velocity = new Vector2 (rb.velocity.x, jumpForce);
@@ -278,6 +295,12 @@ public class PlayerMovment : MonoBehaviour
 
     public void ApplyMovment()
     {
+        if (DialogueManager.isActive == true)
+        {
+            return;
+        }
+       
+
         if (!isAttacking)
         {
             rb.velocity = new Vector2 (xInput * horizontalSpeed, rb.velocity.y);
