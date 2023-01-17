@@ -8,6 +8,7 @@ public class PlayerMovment : MonoBehaviour
 
     [SerializeField] private Transform wallCheck;
     [SerializeField] LayerMask groundLayer, jumpableGround, wallLayer;
+    [SerializeField] private SpriteRenderer spriterenderer;
 
     // Checks if you can flip the player
     bool facingRight = true, canFlip = true;
@@ -46,7 +47,7 @@ public class PlayerMovment : MonoBehaviour
     public float attackHorizontalSpeed = 0f;
 
     // Raycasts for grounded
-    [SerializeField] private float rayLength, rayPostionOffset;
+    [SerializeField] private float rayLengthGround, rayLengthCeiling, rayPostionOffset;
 
     Vector3 RayPostionCenter, RayPostionLeft, RayPostionRight;
 
@@ -56,6 +57,8 @@ public class PlayerMovment : MonoBehaviour
 
     public bool CanJump = true;
 
+    public bool CanWallJump = true;
+
     // Calls for components outside script
     public ParticleSystem footsteps;
     private ParticleSystem.EmissionModule footEmission;
@@ -64,6 +67,7 @@ public class PlayerMovment : MonoBehaviour
 
     void Awake()
     {
+        spriterenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         footEmission = footsteps.emission;
@@ -71,8 +75,7 @@ public class PlayerMovment : MonoBehaviour
 
     void Update()
     {
-    
-
+        CeilingCheck();
         Grounded();
 
         isAttacking = GetComponent<PlayerCombat>().isAttacking;
@@ -254,13 +257,13 @@ public class PlayerMovment : MonoBehaviour
 
     public void Grounded()
     {
-        RayPostionCenter = transform.position + new Vector3(0, -0.75f, 0);
-        RayPostionLeft = transform.position + new Vector3(-rayPostionOffset, -0.75f, 0);
-        RayPostionRight = transform.position + new Vector3(rayPostionOffset, -0.75f, 0);
+        RayPostionCenter = transform.position + new Vector3(0, Vector2.down.y * (1.40208f / 2) - 0.06435335f, 0);
+        RayPostionLeft = transform.position + new Vector3(-rayPostionOffset, Vector2.down.y * (1.40208f / 2) - 0.06435335f, 0);
+        RayPostionRight = transform.position + new Vector3(rayPostionOffset, Vector2.down.y * (1.40208f / 2) - 0.06435335f, 0);
 
-        GroundHitsCenter = Physics2D.RaycastAll(RayPostionCenter, Vector2.down, rayLength);
-        GroundHitsLeft = Physics2D.RaycastAll(RayPostionLeft, Vector2.down, rayLength);
-        GroundHitsRight = Physics2D.RaycastAll(RayPostionRight, Vector2.down, rayLength);
+        GroundHitsCenter = Physics2D.RaycastAll(RayPostionCenter, Vector2.down, rayLengthGround);
+        GroundHitsLeft = Physics2D.RaycastAll(RayPostionLeft, Vector2.down, rayLengthGround);
+        GroundHitsRight = Physics2D.RaycastAll(RayPostionRight, Vector2.down, rayLengthGround);
 
         AllRaycastHits[0] = GroundHitsCenter;
         AllRaycastHits[1] = GroundHitsLeft;
@@ -268,9 +271,31 @@ public class PlayerMovment : MonoBehaviour
 
         CanJump = GroundChecks(AllRaycastHits);
 
-        Debug.DrawRay(RayPostionCenter, Vector2.down * rayLength, Color.red);
-        Debug.DrawRay(RayPostionLeft, Vector2.down * rayLength, Color.red);
-        Debug.DrawRay(RayPostionRight, Vector2.down * rayLength, Color.red);
+        Debug.DrawRay(RayPostionCenter, Vector2.down * rayLengthGround, Color.red);
+        Debug.DrawRay(RayPostionLeft, Vector2.down * rayLengthGround, Color.red);
+        Debug.DrawRay(RayPostionRight, Vector2.down * rayLengthGround, Color.red);
+    }
+
+    public void CeilingCheck()
+    {
+        RayPostionCenter = transform.position + new Vector3(0, Vector2.up.y * (1.40208f / 2) - 0.06435335f, 0);
+        RayPostionLeft = transform.position + new Vector3(-rayPostionOffset, Vector2.up.y * (1.40208f / 2) - 0.06435335f, 0);
+        RayPostionRight = transform.position + new Vector3(rayPostionOffset, Vector2.up.y * (1.40208f / 2) - 0.06435335f, 0);
+
+        GroundHitsCenter = Physics2D.RaycastAll(RayPostionCenter, Vector2.up, rayLengthCeiling);
+        GroundHitsLeft = Physics2D.RaycastAll(RayPostionLeft, Vector2.up, rayLengthCeiling);
+        GroundHitsRight = Physics2D.RaycastAll(RayPostionRight, Vector2.up, rayLengthCeiling);
+
+        AllRaycastHits[0] = GroundHitsCenter;
+        AllRaycastHits[1] = GroundHitsLeft;
+        AllRaycastHits[2] = GroundHitsRight;
+
+        CanWallJump = GroundChecks(AllRaycastHits);
+
+        Debug.DrawRay(RayPostionCenter, Vector2.up * rayLengthCeiling, Color.red);
+        Debug.DrawRay(RayPostionLeft, Vector2.up * rayLengthCeiling, Color.red);
+        Debug.DrawRay(RayPostionRight, Vector2.up * rayLengthCeiling, Color.red);
+
     }
 
     private bool GroundChecks(RaycastHit2D[][] GroundHits)
