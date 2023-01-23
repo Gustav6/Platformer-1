@@ -30,6 +30,7 @@ public class PlayerMovment : MonoBehaviour
     bool isDashing, canDash = true;
     [SerializeField] private TrailRenderer tr;
     // Wall slide
+    private bool isWalled;
     private bool isWallSliding;
     public float wallSlidingSpeed = 2f;
 
@@ -47,15 +48,15 @@ public class PlayerMovment : MonoBehaviour
     public float attackHorizontalSpeed = 0f;
 
     // Raycasts for grounded
-    [SerializeField] private float rayLengthGround, rayLengthCeiling, rayPostionOffset;
+    [SerializeField] private float rayLengthGround, rayLengthCeiling, rayLengthSide, rayPostionOffset, rayPostionOffsetSide;
 
     Vector3 RayPostionCenter, RayPostionLeft, RayPostionRight;
 
     RaycastHit2D[] GroundHitsCenter, GroundHitsRight, GroundHitsLeft;
 
-    RaycastHit2D[][] AllRaycastHits = new RaycastHit2D[3][];
+    readonly RaycastHit2D[][] AllRaycastHits = new RaycastHit2D[3][];
 
-    public bool CanJump = true;
+    public bool isGrounded = true;
 
     public bool CanWallJump = true;
 
@@ -75,6 +76,7 @@ public class PlayerMovment : MonoBehaviour
 
     void Update()
     {
+        IsWalled();
         CeilingCheck();
         Grounded();
 
@@ -85,7 +87,7 @@ public class PlayerMovment : MonoBehaviour
             return;
         }
 
-        if (CanJump || doubleJump)
+        if (isGrounded || doubleJump)
         {
             hangCounter = hangTime;
         }
@@ -94,7 +96,7 @@ public class PlayerMovment : MonoBehaviour
             hangCounter -= Time.deltaTime;
         }
 
-        if (xInput != 0 && CanJump)
+        if (xInput != 0 && isGrounded && !isWalled)
         {
             footEmission.rateOverTime = 35f;
         }
@@ -105,7 +107,7 @@ public class PlayerMovment : MonoBehaviour
 
         if (rb.velocity.y < 0f)
         {
-            rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.deltaTime;
+            rb.velocity += (fallMultiplier - 1) * Time.deltaTime * Physics2D.gravity * Vector2.up;
         }
 
         anim.SetFloat("SpeedX", Mathf.Abs(xInput));
@@ -118,14 +120,12 @@ public class PlayerMovment : MonoBehaviour
 
     void FixedUpdate()
     {
-      
-
         if (isDashing)
         {
             return;
         }
 
-        if (!CanJump)
+        if (!isGrounded)
         {
             anim.SetFloat("SpeedY", rb.velocity.y);
         }
@@ -138,21 +138,15 @@ public class PlayerMovment : MonoBehaviour
         WallSlide();
         if (!isWallJumping)
         {
-            ApplyMovment();
+            HorizontalMovment();
         }
-    }
-
-    private bool IsWalled()
-    {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
     }
 
     private void WallSlide()
     {
-        if (IsWalled() && !CanJump && xInput != 0f)
+        if (isWalled && !isGrounded && rb.velocity.y < 0 && xInput != 0)
         {
             isWallSliding = true;
-            rb.velocity = new Vector2 (rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
@@ -162,8 +156,6 @@ public class PlayerMovment : MonoBehaviour
 
     private void WallJump()
     {
-     
-
         if (isWallSliding)
         {
             isWallJumping = false;
@@ -249,9 +241,35 @@ public class PlayerMovment : MonoBehaviour
             isJumpingFromWall = true;
         }
 
-        if (CanJump && !context.performed)
+        if (isGrounded && !context.performed)
         {
             doubleJump = false;
+        }
+    }
+
+    public void HorizontalMovment()
+    {
+        if (DialogueManager.isActive == true)
+        {
+            return;
+        }
+
+        if (!isAttacking)
+        {
+            rb.velocity = new Vector2(xInput * horizontalSpeed, rb.velocity.y);
+        }
+
+        if (isAttacking)
+        {
+            rb.velocity = new Vector2(xInput * horizontalSpeed * attackHorizontalSpeed, rb.velocity.y);
+        }
+
+        if (isWallSliding)
+        {
+            if (rb.velocity.y < -wallSlidingSpeed)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+            }
         }
     }
 
@@ -269,7 +287,7 @@ public class PlayerMovment : MonoBehaviour
         AllRaycastHits[1] = GroundHitsLeft;
         AllRaycastHits[2] = GroundHitsRight;
 
-        CanJump = GroundChecks(AllRaycastHits);
+        isGrounded = GroundChecks(AllRaycastHits);
 
         Debug.DrawRay(RayPostionCenter, Vector2.down * rayLengthGround, Color.red);
         Debug.DrawRay(RayPostionLeft, Vector2.down * rayLengthGround, Color.red);
@@ -295,7 +313,53 @@ public class PlayerMovment : MonoBehaviour
         Debug.DrawRay(RayPostionCenter, Vector2.up * rayLengthCeiling, Color.red);
         Debug.DrawRay(RayPostionLeft, Vector2.up * rayLengthCeiling, Color.red);
         Debug.DrawRay(RayPostionRight, Vector2.up * rayLengthCeiling, Color.red);
+    }
 
+    public void IsWalled()
+    {
+        if (facingRight)
+        {
+            RayPostionCenter = transform.position + new Vector3(Vector2.right.x * (0.5100279f / 2), 0, 0);   
+            RayPostionLeft = transform.position + new Vector3(Vector2.right.x * (0.5100279f / 2), -rayPostionOffsetSide - 0.06435335f, 0);
+            RayPostionRight = transform.position + new Vector3(Vector2.right.x * (0.5100279f / 2), rayPostionOffsetSide - 0.06435335f, 0);
+
+            GroundHitsCenter = Physics2D.RaycastAll(RayPostionCenter, Vector2.right, rayLengthSide);
+            GroundHitsLeft = Physics2D.RaycastAll(RayPostionLeft, Vector2.right, rayLengthSide);
+            GroundHitsRight = Physics2D.RaycastAll(RayPostionRight, Vector2.right, rayLengthSide);
+
+            Debug.DrawRay(RayPostionCenter, Vector2.right * rayLengthSide, Color.red);
+            Debug.DrawRay(RayPostionLeft, Vector2.right * rayLengthSide, Color.red);
+            Debug.DrawRay(RayPostionRight, Vector2.right * rayLengthSide, Color.red);
+        }
+        else
+        {
+            RayPostionCenter = transform.position + new Vector3(Vector2.left.x * (0.5100279f / 2), 0, 0);   
+            RayPostionLeft = transform.position + new Vector3(Vector2.left.x * (0.5100279f / 2), -rayPostionOffsetSide - 0.06435335f, 0);
+            RayPostionRight = transform.position + new Vector3(Vector2.left.x * (0.5100279f / 2), rayPostionOffsetSide - 0.06435335f, 0);
+
+            GroundHitsCenter = Physics2D.RaycastAll(RayPostionCenter, Vector2.left, rayLengthSide);
+            GroundHitsLeft = Physics2D.RaycastAll(RayPostionLeft, Vector2.left, rayLengthSide);
+            GroundHitsRight = Physics2D.RaycastAll(RayPostionRight, Vector2.left, rayLengthSide);
+
+            Debug.DrawRay(RayPostionCenter, Vector2.left * rayLengthSide, Color.red);
+            Debug.DrawRay(RayPostionLeft, Vector2.left * rayLengthSide, Color.red);
+            Debug.DrawRay(RayPostionRight, Vector2.left * rayLengthSide, Color.red);
+        }   
+
+        AllRaycastHits[0] = GroundHitsCenter;
+        AllRaycastHits[1] = GroundHitsLeft;
+        AllRaycastHits[2] = GroundHitsRight;
+
+        isWalled = GroundChecks(AllRaycastHits);
+
+        if (isWalled)
+        {
+            anim.SetBool("Walled", isWalled);
+        }
+        else
+        {
+            anim.SetBool("Walled", false);
+        }
     }
 
     private bool GroundChecks(RaycastHit2D[][] GroundHits)
@@ -316,24 +380,6 @@ public class PlayerMovment : MonoBehaviour
         }
         anim.SetBool("Grounded", false);
         return false;
-    }
-
-    public void ApplyMovment()
-    {
-        if (DialogueManager.isActive == true)
-        {
-            return;
-        }
-       
-
-        if (!isAttacking)
-        {
-            rb.velocity = new Vector2 (xInput * horizontalSpeed, rb.velocity.y);
-        }
-        if (isAttacking)
-        {
-            rb.velocity = new Vector2 (xInput * horizontalSpeed * attackHorizontalSpeed, rb.velocity.y);
-        }
     }
 
     public void DisableFlip()

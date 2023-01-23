@@ -35,7 +35,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
-        grounded = GetComponent<PlayerMovment>().CanJump; 
+        grounded = GetComponent<PlayerMovment>().isGrounded; 
 
         CheckCombatInput();
         CheckAttacks();

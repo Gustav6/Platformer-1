@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 3
+  m_AmbientMode: 4
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -58506,8 +58506,10 @@ MonoBehaviour:
   attackHorizontalSpeed: 0.05
   rayLengthGround: 0.2
   rayLengthCeiling: 0.2
-  rayPostionOffset: 0.3
-  CanJump: 1
+  rayLengthSide: 0.15
+  rayPostionOffset: 0.25
+  rayPostionOffsetSide: 0.7
+  isGrounded: 1
   CanWallJump: 1
   footsteps: {fileID: 955608856}
   anim: {fileID: 1255994469}
@@ -58545,7 +58547,7 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.014736503, y: -0.06435335}
+  m_Offset: {x: 0, y: -0.06435335}
   m_Size: {x: 0.51002795, y: 1.4020798}
   m_Direction: 0
 --- !u!95 &1255994469
