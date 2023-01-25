@@ -51602,7 +51602,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1255994464}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1161849523
 MonoBehaviour:
@@ -58449,14 +58449,15 @@ GameObject:
   m_Component:
   - component: {fileID: 1255994464}
   - component: {fileID: 1255994463}
-  - component: {fileID: 1255994467}
+  - component: {fileID: 1255994478}
   - component: {fileID: 1255994466}
   - component: {fileID: 1255994472}
   - component: {fileID: 1255994469}
   - component: {fileID: 1255994475}
-  - component: {fileID: 1255994465}
   - component: {fileID: 1255994474}
   - component: {fileID: 1255994473}
+  - component: {fileID: 1255994477}
+  - component: {fileID: 1255994476}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -58530,59 +58531,10 @@ Transform:
   m_Children:
   - {fileID: 1594865804}
   - {fileID: 955608854}
-  - {fileID: 1639262064}
   - {fileID: 1161849522}
   m_Father: {fileID: 1625776227}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1255994465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255994460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 632618fe6582a6844b416ca41f104fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallCheck: {fileID: 1639262064}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  jumpableGround:
-    serializedVersion: 2
-    m_Bits: 192
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  spriterenderer: {fileID: 0}
-  xInput: 0
-  horizontalSpeed: 8.5
-  fallMultiplier: 3.2
-  jumpForce: 8.4
-  hangTime: 0.2
-  dashingPower: 18
-  dashingTime: 0.2
-  dashingCooldown: 1
-  tr: {fileID: 1255994475}
-  wallSlidingSpeed: 2
-  isWallJumping: 0
-  wallJumpingTime: 0.2
-  wallJumpingDuration: 0.6
-  wallJumpingPower: {x: 7, y: 9}
-  doubleJump: 0
-  attackHorizontalSpeed: 0.05
-  rayLengthGround: 0.2
-  rayLengthCeiling: 0.2
-  rayLengthSide: 0.15
-  rayPostionOffset: 0.25
-  rayPostionOffsetSide: 0.7
-  isGrounded: 1
-  CanWallJump: 1
-  footsteps: {fileID: 955608856}
-  anim: {fileID: 1255994469}
 --- !u!50 &1255994466
 Rigidbody2D:
   serializedVersion: 4
@@ -58591,7 +58543,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255994460}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
@@ -58599,27 +58551,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: b0034efab4aafa94b8d9df6cc498f00f, type: 2}
+  m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!70 &1255994467
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255994460}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.06435335}
-  m_Size: {x: 0.51002795, y: 1.4020798}
-  m_Direction: 0
 --- !u!95 &1255994469
 Animator:
   serializedVersion: 4
@@ -58667,9 +58603,9 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1255994465}
-        m_TargetAssemblyTypeName: PlayerMovment, Assembly-CSharp
-        m_MethodName: CheckInput
+      - m_Target: {fileID: 1255994477}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: XInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -58687,9 +58623,9 @@ MonoBehaviour:
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1255994465}
-        m_TargetAssemblyTypeName: PlayerMovment, Assembly-CSharp
-        m_MethodName: VerticalMovment
+      - m_Target: {fileID: 1255994477}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: YInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -58759,7 +58695,7 @@ MonoBehaviour:
     m_ActionName: Player/Attack[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1255994465}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerMovment, Assembly-CSharp
         m_MethodName: CheckDash
         m_Mode: 0
@@ -58816,7 +58752,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isAttacking: 0
-  anim: {fileID: 1255994469}
+  animator: {fileID: 0}
 --- !u!96 &1255994475
 TrailRenderer:
   serializedVersion: 2
@@ -58932,16 +58868,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255994460}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 289005686096b3041a2ed548e15f6adf, type: 3}
+  m_Script: {fileID: 11500000, guid: 320c4009833df344a9d9dadcffc9c6ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minGroundNormalY: 0.65
-  gravityModifier: 1
-  CanJump: 0
-  rayLength: 0
-  rayPostionOffset: 0
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 128
+  horizontalRayCount: 4
+  verticalRayCount: 4
+  maxClimgAngle: 80
+  maxDescendAngle: 75
 --- !u!114 &1255994477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58949,18 +58887,47 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255994460}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b53ac79baee5bb4ea6606f090f46488, type: 3}
+  m_Script: {fileID: 11500000, guid: b3032c9d716266c4c8e4d180451957cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minGroundNormalY: 0.65
-  gravityModifier: 1
-  CanJump: 0
-  rayLength: 0
-  rayPostionOffset: 0
-  maxSpeed: 7
-  JumpSpeed: 12
+  jumpHeight: 4
+  timeToJumpApex: 0.4
+  accelerationTimeAirborne: 0.2
+  accelerationTimeGrounded: 0.1
+  moveSpeed: 6
+  gravity: 0
+  jumpVelocity: 0
+  velocityXSmothing: 0
+  velocityYSmothing: 0
+  velocity: {x: 0, y: 0}
+--- !u!61 &1255994478
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255994460}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.03134805, y: -0.043476045}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.59375, y: 2.5}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.4508971, y: 1.3409413}
+  m_EdgeRadius: 0
 --- !u!1 &1284492985
 GameObject:
   m_ObjectHideFlags: 0
@@ -59755,37 +59722,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1630799415}
   m_CullTransparentMesh: 1
---- !u!1 &1639262063
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1639262064}
-  m_Layer: 0
-  m_Name: WallCheck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1639262064
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1639262063}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.216, y: 0.436, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1255994464}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1677865855
 GameObject:
   m_ObjectHideFlags: 0
@@ -60370,6 +60306,10 @@ PrefabInstance:
       propertyPath: playerHealth
       value: 
       objectReference: {fileID: 1255994473}
+    - target: {fileID: 2392738051417107016, guid: cb9a3cb2a1110ed46ace29de9020c7f8, type: 3}
+      propertyPath: maxHealth
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2392738051417107018, guid: cb9a3cb2a1110ed46ace29de9020c7f8, type: 3}
       propertyPath: m_RootOrder
       value: 4

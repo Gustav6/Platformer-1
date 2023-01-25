@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-[RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Controller2D : MonoBehaviour
 {
     public LayerMask collisionMask;
@@ -37,18 +37,19 @@ public class Controller2D : MonoBehaviour
     #endregion
 
 
-    new CapsuleCollider2D collider2D;
+    new BoxCollider2D collider2D;
     RaycastOrigins raycastOrigins;
 
     void Start()
     {
-        collider2D = GetComponent<CapsuleCollider2D>();
+        collider2D = GetComponent<BoxCollider2D>();
         CalculateRaySpacing();
     }
 
     public void Move(Vector2 velocity)
     {
         UpdateRaycastOrigins();
+
         collisions.Reset();
         collisions.velocityOld = velocity;
          
@@ -79,7 +80,7 @@ public class Controller2D : MonoBehaviour
             rayOrigin += Vector2.up * (horizonalRaySpacing * i);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
 
-            Debug.DrawRay(rayOrigin, directionX * Vector2.right, Color.red);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.red);
 
             if (hit)
             {
@@ -164,7 +165,6 @@ public class Controller2D : MonoBehaviour
                 }
             }
         }
-
     }
 
     void ClimbSlope(ref Vector2 velocity, float slopeAngle)

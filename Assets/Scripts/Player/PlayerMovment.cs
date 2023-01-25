@@ -382,15 +382,6 @@ public class PlayerMovment : MonoBehaviour
         return false;
     }
 
-    public void DisableFlip()
-    {
-        canFlip = false;
-    }
-
-    public void EnableFlip()
-    {
-        canFlip = true;
-    }
 
     void Flip()
     {
@@ -420,3 +411,5 @@ public class PlayerMovment : MonoBehaviour
         canDash = true;
     }
 }
+
+

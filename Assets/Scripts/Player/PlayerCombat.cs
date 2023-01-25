@@ -22,20 +22,31 @@ public class PlayerCombat : MonoBehaviour
 
     private float lastInputTime = Mathf.NegativeInfinity;
 
-    public Animator anim;
+    private bool grounded;
     private bool attack;
 
-    private bool grounded;
+    public Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     private void Start()
     {
-        anim = GetComponent<Animator>();
-        anim.SetBool("CanAttack", combatEnabled);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        animator.SetBool("CanAttack", combatEnabled);
     }
 
     private void Update()
     {
-        grounded = GetComponent<PlayerMovment>().isGrounded; 
+        if (!spriteRenderer.flipX)
+        {
+            attack1HitBoxPos.localPosition = new Vector2(0.839f, 0.08f);
+        }
+        else
+        {
+            attack1HitBoxPos.localPosition = new Vector2(-0.839f, 0.08f);
+        }
+
+        grounded = GetComponent<Controller2D>().collisions.below; 
 
         CheckCombatInput();
         CheckAttacks();
@@ -53,7 +64,6 @@ public class PlayerCombat : MonoBehaviour
                 attack = false;
             }
         }
-
     }
 
     private void CheckAttacks()
@@ -64,9 +74,9 @@ public class PlayerCombat : MonoBehaviour
             {
                 gotInput = false;
                 isAttacking = true;
-                anim.SetInteger("AttackCounter", attackCounter);
-                anim.SetBool("Attack1", true);
-                anim.SetBool("IsAttacking", isAttacking);
+                animator.SetInteger("AttackCounter", attackCounter);
+                animator.SetBool("Attack1", true);
+                animator.SetBool("IsAttacking", isAttacking);
                 attackCounter++;
             }
             if (attackCounter >= 3)
@@ -96,7 +106,6 @@ public class PlayerCombat : MonoBehaviour
 
         foreach (Collider2D collider in detectedObjects)
         {
-            //collider.transform.parent.SendMessage("Damage", attack1Damage);
             collider.GetComponent<EnemyHealth>().TakeDamage(attack1Damage);
         }    
     }
@@ -104,13 +113,13 @@ public class PlayerCombat : MonoBehaviour
     private void FinishAttack1()
     {
         isAttacking = false;
-        anim.SetBool("IsAttacking", isAttacking);
-        anim.SetBool("Attack1", false);
+        animator.SetBool("IsAttacking", isAttacking);
+        animator.SetBool("Attack1", false);
     }
 
     private void AttackCounterReset()
     {
-        anim.SetInteger("AttackCounter", 0);
+        animator.SetInteger("AttackCounter", 0);
     }
 
     private void OnDrawGizmos()
