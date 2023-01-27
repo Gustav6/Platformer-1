@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     #region Vertical Movment
     [Header("Veritcal Movment")]
 
-    [Tooltip("How high the player can jump")]
+    [Tooltip("The maximum Height the player can jump")]
     [SerializeField] float jumpHeight = 4f;
     [Tooltip("How long it takes the player to reach the variabel jumpHeight")]
     [SerializeField] float timeToJumpApex = .4f;
@@ -26,13 +26,22 @@ public class Player : MonoBehaviour
     [SerializeField] float accelerationTimeGrounded = .1f;
     [Tooltip("The top speed on the x axis")]
     [SerializeField] float moveSpeed = 6f;
-    float xInput;
+    private float xInput;
     #endregion
 
-    [SerializeField] float gravity, jumpVelocity, velocityXSmothing, velocityYSmothing;
+    #region Controlls player logic
+    [Header("Player Logic")]    
 
-    [SerializeField] Vector2 velocity;
+    [Tooltip("How high the gravity will be on the player")]
+    [SerializeField] float gravity;
+    [Tooltip("How high the players jump velocity can be")]
+    [SerializeField] float jumpVelocity;
+    [SerializeField] float velocityXSmothing, velocityYSmothing;
+    #endregion
 
+    [SerializeField]Vector2 velocity;
+
+    // Variables for the players sprite
     bool canFlip = true;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -69,7 +78,6 @@ public class Player : MonoBehaviour
 
         if (!jumpPressed)
         {
-            
         }
 
         animator.SetFloat("SpeedX", Mathf.Abs(xInput));
@@ -99,9 +107,9 @@ public class Player : MonoBehaviour
             jumpPressed = true;
         }
 
-        if (context.canceled)
+        if (context.canceled && velocity.y > 0)
         {
-            jumpPressed = false;
+            velocity.y = velocity.y * 0.5f;
         }
     }
     public void DisableFlip()

@@ -50,7 +50,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0 && !isDead)
         {
-            GetComponent<PlayerMovment>().enabled = false;
+            GetComponent<Player>().enabled = false;
             GetComponent<PlayerCombat>().enabled = false;
             anim.SetBool("IsDead", true);
             anim.SetBool("Jump", false);

@@ -58876,8 +58876,8 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 128
-  horizontalRayCount: 4
-  verticalRayCount: 4
+  horizontalRayCount: 3
+  verticalRayCount: 3
   maxClimgAngle: 80
   maxDescendAngle: 75
 --- !u!114 &1255994477
