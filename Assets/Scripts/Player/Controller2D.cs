@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Controller2D : MonoBehaviour
 {
+    // What layer that can be collided with from the player
     public LayerMask collisionMask;
 
     // Skin width means that raycast start a little inside player, so that collisions dont get messed up
@@ -33,12 +34,14 @@ public class Controller2D : MonoBehaviour
     #region Detect Collisions
     float horizonalRaySpacing;
     float verticalRaySpacing;
-    public CollisionInfo collisions;
     #endregion
 
-
-    new BoxCollider2D collider2D;
+    // The origin from where the raycast are cast from 
     RaycastOrigins raycastOrigins;
+
+    // Get colliders for the player
+    public CollisionInfo collisions;
+    new BoxCollider2D collider2D;
 
     void Start()
     {
@@ -244,8 +247,7 @@ public class Controller2D : MonoBehaviour
         public bool above, below;
         public bool left, right;
 
-        public bool climbingSlope;
-        public bool descendingSlope;
+        public bool climbingSlope, descendingSlope;
         public float slopeAngle, slopeAngleOld;
 
         public Vector2 velocityOld;

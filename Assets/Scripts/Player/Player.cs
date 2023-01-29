@@ -7,17 +7,22 @@ using UnityEngine.Windows;
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
 {
-    #region Vertical Movment
+    #region Players Vertical Input/Movment
     [Header("Veritcal Movment")]
 
-    [Tooltip("The maximum Height the player can jump")]
-    [SerializeField] float jumpHeight = 4f;
+    [Tooltip("Maximum height the player can jump")]
+    [SerializeField] float maxJumpHeight = 4f;
+    [Tooltip("Minimum height the player can jump")]
+    [SerializeField] float minJumpHeight = 2f;
     [Tooltip("How long it takes the player to reach the variabel jumpHeight")]
     [SerializeField] float timeToJumpApex = .4f;
-    bool jumpPressed;
+    [Tooltip("The maximum amount of jump speed for the player")]
+    [SerializeField] float maxJumpVelocity;
+    [Tooltip("The minimum amount of jump speed for the player")]
+    [SerializeField] float minJumpVelocity;
     #endregion
 
-    #region Horizontal Movment
+    #region Players Horizontal Input/Movment
     [Header("Horizontal Movment")]
 
     [Tooltip("The acceleration then airborne on the x axis")]
@@ -26,20 +31,20 @@ public class Player : MonoBehaviour
     [SerializeField] float accelerationTimeGrounded = .1f;
     [Tooltip("The top speed on the x axis")]
     [SerializeField] float moveSpeed = 6f;
-    private float xInput;
+    [Tooltip("Acceleration for the player on the x axis")]
+    [SerializeField] float velocityXSmothing;
+    // players input on the x axis
+    float xInput;
     #endregion
 
-    #region Controlls player logic
-    [Header("Player Logic")]    
+    #region Player Logic
+    [Header("Player Logic")]
 
-    [Tooltip("How high the gravity will be on the player")]
+    [Tooltip("How high the gravity it will be on the player")]
     [SerializeField] float gravity;
-    [Tooltip("How high the players jump velocity can be")]
-    [SerializeField] float jumpVelocity;
-    [SerializeField] float velocityXSmothing, velocityYSmothing;
+    [Tooltip("The players velocity on the x and y axis")]
+    [SerializeField] Vector2 velocity;
     #endregion
-
-    [SerializeField]Vector2 velocity;
 
     // Variables for the players sprite
     bool canFlip = true;
@@ -53,9 +58,10 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
-        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
-        print("Gravity: " + gravity + " Jump Velocity: " + jumpVelocity);
+        gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity)) * minJumpHeight;
+        print("Gravity: " + gravity + " Jump Velocity: " + maxJumpVelocity);
     }
     void Update()
     {
@@ -74,10 +80,6 @@ public class Player : MonoBehaviour
         else
         {
             animator.SetFloat("SpeedY", 0);
-        }
-
-        if (!jumpPressed)
-        {
         }
 
         animator.SetFloat("SpeedX", Mathf.Abs(xInput));
@@ -103,13 +105,15 @@ public class Player : MonoBehaviour
     {
         if (context.started && controller.collisions.below)
         {
-            velocity.y = jumpVelocity;
-            jumpPressed = true;
+            velocity.y = maxJumpVelocity;
         }
 
         if (context.canceled && velocity.y > 0)
         {
-            velocity.y = velocity.y * 0.5f;
+            if (velocity.y > minJumpVelocity)
+            {
+                velocity.y = minJumpVelocity;
+            }
         }
     }
     public void DisableFlip()

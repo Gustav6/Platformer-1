@@ -58892,15 +58892,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3032c9d716266c4c8e4d180451957cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 4
+  maxJumpHeight: 4
+  minJumpHeight: 1
   timeToJumpApex: 0.4
+  maxJumpVelocity: 0
+  minJumpVelocity: 0
   accelerationTimeAirborne: 0.2
   accelerationTimeGrounded: 0.1
   moveSpeed: 6
-  gravity: 0
-  jumpVelocity: 0
   velocityXSmothing: 0
-  velocityYSmothing: 0
+  gravity: 0
   velocity: {x: 0, y: 0}
 --- !u!61 &1255994478
 BoxCollider2D:
